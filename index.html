@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+    <div class="container">
+
+        <!--POMODORO-->
+        <div class= "pomodoro">
+            <img src="images/tomato.png"> 
+            <div id="timer">25:00</div>
+            <div class="row">
+                <button id="plus-button" onclick="plusTimer()">+1:00</button>
+                <button id="less-button" onclick="lessTimer()">-1:00</button>
+                <button id="break"       onclick="breakTimer()">Break</button>
+            </div>
+            <div class="row">
+                <button id="start-button" onclick="startTimer()">Start</button>
+                <button id="pause-button" onclick="pauseTimer()">Pause</button>
+                <button id="reset-button" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+
+        <!--TO-DO LIST-->
+        <div class="todo-app">
+            <h2>To-Do List<img src="images/notes.png"></h2> 
+            <div class="row">
+               <input type="text" id="input-box" placeholder="Escribe la tarea aqui"> 
+               <button onclick="addTask()">Añadir</button>
+            </div>
+            <ul id="list-container">
+                <!-- Tareas se añadiran dinamicamente en esta seccion-->
+            </ul>
+        </div>
+    </div>
+
+<script src="script.js"></script>   
+</body>
+</html>
