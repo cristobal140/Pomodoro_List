@@ -1,8 +1,10 @@
 # 🍅 Pomodoro & To-Do List
 
-<div align="center">
-  <video src="Pomodoro.mp4" width="100%" autoplay loop muted playsinline></video>
-</div>
+
+
+https://github.com/user-attachments/assets/b9403011-6da0-4faf-ac46-6b6aa954500a
+
+
 
 
 ## 🧐 ¿Qué es y qué problema soluciona?
