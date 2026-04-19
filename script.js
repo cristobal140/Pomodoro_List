@@ -18,13 +18,18 @@ function addTask() {
     saveTask();
 }
 
-listContainer.addEventListener("click", function(e) {
+listContainer.addEventListener("click", function (e) {
     if (e.target.tagName === "LI") {
         e.target.classList.toggle("checked");
         saveTask();
     } else if (e.target.tagName === "SPAN") {
-        e.target.parentElement.remove();
-        saveTask();
+        const li = e.target.parentElement;
+        // Agregamos clase para la animación suave
+        li.classList.add("fade-out");
+        setTimeout(() => {
+            li.remove();
+            saveTask();
+        }, 300); // 300ms debe coincidir con la transición CSS
     }
 });
 
@@ -41,15 +46,39 @@ showTask();
 // Pomodoro Timer
 let timer;
 let isPaused = false;
-let timeLeft = 25 * 60; // 25*60=25 min in seconds
+let isFocusMode = true;
+let pomodoroCount = 0;
+let timeLeft = 25 * 60; // 25 min in seconds
+
+const alarmSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
 
 function startTimer() {
     if (!timer) {
         timer = setInterval(() => {
             if (timeLeft <= 0) {
-                clearInterval(timer);
-                timer = null;
-                alert("Se acabo el tiempo!");
+                // Toca el sonido
+                alarmSound.play();
+                
+                if (isFocusMode) {
+                    // Acabamos un ciclo de Focus
+                    pomodoroCount++;
+                    document.getElementById('cycle-counter').textContent = `🍅 Completados: ${pomodoroCount}`;
+                    
+                    // Cambiar a Break Automáticamente
+                    isFocusMode = false;
+                    document.body.classList.add('theme-break');
+                    timeLeft = 10 * 60; // 10 MINUTOS INMEDIATOS
+                    updateTimer();
+                    
+                    // Como no hemos hecho clearInterval(timer), el descanso arranca inmediatamente.
+                } else {
+                    // Acabamos un Break
+                    clearInterval(timer);
+                    timer = null;
+                    alert("¡Descanso terminado! Volvamos al foco.");
+                    resetTimer();
+                }
+                
             } else if (!isPaused) {
                 timeLeft--;
                 updateTimer();
@@ -60,12 +89,18 @@ function startTimer() {
 
 function pauseTimer() {
     isPaused = !isPaused;
+    document.getElementById('pause-button').textContent = isPaused ? "Resume" : "Pause";
 }
 
 function resetTimer() {
     clearInterval(timer);
     timer = null;
     isPaused = false;
+    isFocusMode = true;
+    
+    document.getElementById('pause-button').textContent = "Pause";
+    document.body.classList.remove('theme-break');
+    
     timeLeft = 25 * 60;
     updateTimer();
 }
@@ -74,6 +109,7 @@ function plusTimer() {
     timeLeft += 60;
     updateTimer();
 }
+
 function lessTimer() {
     if (timeLeft > 60) {
         timeLeft -= 60;
@@ -82,25 +118,36 @@ function lessTimer() {
     }
     updateTimer();
 }
+
 function breakTimer() {
     clearInterval(timer);
     timer = null;
     isPaused = false;
-    timeLeft = 5 * 60;
+    isFocusMode = false;
+    
+    document.getElementById('pause-button').textContent = "Pause";
+    document.body.classList.add('theme-break');
+    
+    timeLeft = 10 * 60;
     updateTimer();
 }
 
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    document.getElementById('timer').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    
+    document.getElementById('timer').textContent = formattedTime;
+    
+    // Título de la pestaña dinámico
+    document.title = `(${formattedTime}) ${isFocusMode ? 'Focus' : 'Break'} - Pomodoro`;
 }
 
 // Handle Enter key press for adding tasks
-inputBox.addEventListener('keypress', function(e) {
+inputBox.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         addTask();
     }
 });
-updateTimer();
 
+updateTimer();
